@@ -1,7 +1,8 @@
 #FABRICA
 
 import paho.mqtt.client as mqtt 
-import time  
+import time
+import sys  
 
 pecasNaFabrica = [5,5,5,5,5,5,5,5,5,5]
 
@@ -58,11 +59,12 @@ def pedirPecas(pecas):
     result = client.publish("fabricas", "fabrica/" + str(nfab) + "/" + pedido)
     #print(pedido)
 
-
-
 broker_hostname ="localhost"
 port = 1883 
-nfab = input("escreva o numero da fabrica")
+if len(sys.argv) != 2:
+    print("Usage: python3 fabrica.py <fabrica_number>")
+    sys.exit()
+nfab = sys.argv[1]
 client = mqtt.Client("fabrica" + nfab)
 # client.username_pw_set(username="user_name", password="password") # uncomment if you use password auth
 client.on_connect=on_connect
