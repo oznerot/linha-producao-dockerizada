@@ -33,16 +33,93 @@ services:
             - mosquitto
         depends_on:
             - mosquitto
-    linha:
+    linha1-0:
         image: pahomqtt
         command: python3 ./linha_teste.py -i 0 -f 1
         networks:
             - mosquitto
         depends_on:
             - mosquitto
-    linha2:
+    linha1-1:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 1 -f 1
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha1-2:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 2 -f 1
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha1-3:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 3 -f 1
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha1-4:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 4 -f 1
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha2-0:
         image: pahomqtt
         command: python3 ./linha_teste.py -i 0 -f 2
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha2-1:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 1 -f 2
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha2-2:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 2 -f 2
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha2-3:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 3 -f 2
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha2-4:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 4 -f 2
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha2-5:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 5 -f 2
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha2-6:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 6 -f 2
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha2-7:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 7 -f 2
         networks:
             - mosquitto
         depends_on:
