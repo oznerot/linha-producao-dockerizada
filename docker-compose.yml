@@ -12,10 +12,25 @@ services:
             - /mosquitto/data:/mosquitto/data
         networks:
             - mosquitto
+    estoque:
+        image: pahomqtt
+        command: python3 ./estoque_teste.py
     fabrica1:
         image: pahomqtt
         command: python3 ./fabrica_teste1.py
-   
+    #fabrica2:
+        #image: pahomqtt
+        #command: python3 ./fabrica_teste2.py
+    linha:
+        image: pahomqtt
+        command: python3 ./linha.py
+    almoxarifado:
+        image: pahomqtt
+        command: python3 ./almoxarifado_teste.py
+    fornecedor:
+        image: pahomqtt
+        command: python3 ./fornecedor_teste.py
+    
 networks:
     mosquitto:
         name: mosquitto
