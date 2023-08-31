@@ -118,7 +118,7 @@ parser.add_argument('-np', '--num_pedidos', type=int, default="5",
 
 args = parser.parse_args()
 
-broker_hostname ="localhost"
+broker_hostname ="mosquitto"
 port = 1883
 
 # id_estoque = input("Escreva o numero do estoque: ")

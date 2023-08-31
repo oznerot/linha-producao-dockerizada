@@ -133,13 +133,13 @@ parser.add_argument('-a', '--id_almoxarifado', type=str, default="1",
 
 args = parser.parse_args()
 
-broker_hostname ="localhost"
+broker_hostname ="mosquitto"
 port = 1883
 
 # id_almoxarifado = input("Escreva o numero do almoxarifado: ")
 id_almoxarifado = args.id_almoxarifado
 client = mqtt.Client("almoxarifado" + id_almoxarifado)
-client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
+#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect = on_connect
 client.on_message = on_message
 

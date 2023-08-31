@@ -14,22 +14,42 @@ services:
             - mosquitto
     estoque:
         image: pahomqtt
-        command: python3 ./estoque_teste.py
-    fabrica1:
+        command: python3 ./estoque_teste.py -np 10
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    fabrica2:
         image: pahomqtt
-        command: python3 ./fabrica_teste1.py
-    #fabrica2:
+        command: python3 ./fabrica_teste2.py
+        networks: 
+            - mosquitto
+        depends_on:
+            - mosquitto
+    #fabrica1:
         #image: pahomqtt
-        #command: python3 ./fabrica_teste2.py
+        #command: python3 ./fabrica_teste1.py
     linha:
         image: pahomqtt
-        command: python3 ./linha.py
+        command: python3 ./linha_teste.py
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
     almoxarifado:
         image: pahomqtt
         command: python3 ./almoxarifado_teste.py
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
     fornecedor:
         image: pahomqtt
         command: python3 ./fornecedor_teste.py
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
     
 networks:
     mosquitto:
