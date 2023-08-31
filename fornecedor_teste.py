@@ -87,13 +87,13 @@ parser.add_argument('-i', '--id_fornecedor', type=str, default="1",
 
 args = parser.parse_args()
 
-broker_hostname ="localhost"
+broker_hostname ="mosquitto"
 port = 1883
 
 # id_fornecedor = input("Escreva o numero do fornecedor: ")
 id_fornecedor = args.id_fornecedor
 client = mqtt.Client("fornecedor" + id_fornecedor)
-client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
+#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect = on_connect
 client.on_message = on_message
 
