@@ -14,23 +14,22 @@ services:
             - mosquitto
     estoque:
         image: pahomqtt
-        command: python3 ./estoque_teste.py
-    fabrica1:
-        image: pahomqtt
-        command: python3 ./fabrica_teste1.py
-    #fabrica2:
+        #command: sleep 1 && python3 ./estoque_teste.py
+    #fabrica1:
         #image: pahomqtt
-        #command: python3 ./fabrica_teste2.py
+        #command: sleep 1 && python3 ./fabrica_teste1.py
+    fabrica2:
+        image: pahomqtt
+        command: sleep 1 && python3 ./fabrica_teste2.py
     linha:
         image: pahomqtt
-        command: python3 ./linha.py
+        command: sleep 1 && python3 ./linha_teste.py
     almoxarifado:
         image: pahomqtt
-        command: python3 ./almoxarifado_teste.py
+        command: sleep 1 && python3 ./almoxarifado_teste.py
     fornecedor:
         image: pahomqtt
-        command: python3 ./fornecedor_teste.py
-    
+        command: sleep 1 && python3 ./fornecedor_teste.py
 networks:
     mosquitto:
         name: mosquitto
