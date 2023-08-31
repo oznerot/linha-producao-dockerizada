@@ -1,5 +1,6 @@
 # ESTOQUE DE PRODUTOS
 
+import argparse
 import random
 import paho.mqtt.client as mqtt 
 import time
@@ -25,17 +26,11 @@ class Estoque:
     def esperar_pedido(self):
 
         if(sum(self.pedido_atual) == 0):
-            # self.pedido_foi_feito = False
             return True
         
-        # elif(self.pedido_foi_feito == False):
         else:
             self.mandar_pedido()
-            # self.pedido_foi_feito = True
             return False
-        
-        # else:
-        #     return False
     
     def mandar_pedido(self):
 
@@ -45,7 +40,7 @@ class Estoque:
             mensagem_pedido += str(produto) + "," + str(quantidade) + ";"
         
         mensagem_pedido = mensagem_pedido[:-1]
-        print(mensagem_pedido)
+        # print(mensagem_pedido)
 
         result = client.publish("estoque_fabrica", "estoque/" + str(self.id_estoque) + "/fabrica/2/" + mensagem_pedido)
 
@@ -88,36 +83,46 @@ def on_message(client, userdata, message):
             estoque.pedido_atual[produto] -= quantidade
             estoque.produtos_em_estoque[produto] += quantidade
 
-def mandar_pedido(pedido):
+# def mandar_pedido(pedido):
 
-    mensagem_pedido = ""
+#     mensagem_pedido = ""
 
-    for produto, quantidade in enumerate(pedido):
-        mensagem_pedido += str(produto) + "," + str(quantidade) + ";"
+#     for produto, quantidade in enumerate(pedido):
+#         mensagem_pedido += str(produto) + "," + str(quantidade) + ";"
     
-    mensagem_pedido = mensagem_pedido[:-1]
-    print(mensagem_pedido)
+#     mensagem_pedido = mensagem_pedido[:-1]
+#     print(mensagem_pedido)
 
-    result = client.publish("estoque_fabrica", "estoque/" + str(id_estoque) + "/" + mensagem_pedido)
+#     result = client.publish("estoque_fabrica", "estoque/" + str(id_estoque) + "/" + mensagem_pedido)
 
-def esperar_pedido(pedido_atual):
+# def esperar_pedido(pedido_atual):
 
-    if(sum(pedido_atual) == 0):
-        pedido_foi_feito = False
-        return True
+#     if(sum(pedido_atual) == 0):
+#         pedido_foi_feito = False
+#         return True
     
-    elif(pedido_foi_feito == False):
-        mandar_pedido(pedido_atual)
-        pedido_foi_feito = True
-        return False
+#     elif(pedido_foi_feito == False):
+#         mandar_pedido(pedido_atual)
+#         pedido_foi_feito = True
+#         return False
     
-    else:
-        return False
+#     else:
+#         return False
+
+parser = argparse.ArgumentParser(description='Argumentos para execução do estoque.')
+
+parser.add_argument('-e', '--id_estoque', type=str, default="1",
+                    help="Define o ID do estoque")
+parser.add_argument('-np', '--num_pedidos', type=int, default="5",
+                    help="Define o número de pedidos que serão feitos")
+
+args = parser.parse_args()
 
 broker_hostname ="localhost"
 port = 1883
 
-id_estoque = input("Escreva o numero do estoque: ")
+# id_estoque = input("Escreva o numero do estoque: ")
+id_estoque = args.id_estoque
 client = mqtt.Client("estoque" + id_estoque)
 client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect = on_connect
@@ -126,36 +131,9 @@ client.on_message = on_message
 client.connect(broker_hostname, port) 
 client.loop_start()
 
-# estoque[x-1] -> quantidade de Pvx (produto x)
-estoque = [0, 0, 0, 0, 0]
-
-num_pedido_atual = 0
-num_pedidos = 5
-do = True
-
-lista_pedidos = []
-
-for i in range(num_pedidos):
-    lista_pedidos.append(random.sample(range(0, 10), 5))
-
-print(lista_pedidos)
-
-pedido_atual = lista_pedidos[num_pedido_atual]
-
+num_pedidos = args.num_pedidos
 estoque = Estoque(id_estoque, num_pedidos=num_pedidos, min_produto=0, max_produto=5)
 
-# while(do):
-#     if(not client.is_connected()):
-#         pass
-    
-#     elif(num_pedido_atual < num_pedidos):
-#         printwc(f"Pedido {num_pedido_atual}: {pedido_atual}", color="red")
-        
-#         if(esperar_pedido(pedido_atual)):
-#             num_pedido_atual += 1
-#             printwc("Pedido chegou!", color="green")
-
-#         time.sleep(1)
 
 while(True):
     if(not client.is_connected()):
@@ -165,12 +143,13 @@ while(True):
         printwc(f"Pedido {estoque.num_pedido_atual}: {estoque.pedido_atual}", color="red")
         
         if(estoque.esperar_pedido()):
-            num_pedido_atual += 1
+            # num_pedido_atual += 1
             estoque.num_pedido_atual += 1
             if estoque.num_pedido_atual < estoque.num_pedidos:
-                estoque.pedido_atual = estoque.lista_pedidos[num_pedido_atual]
+                estoque.pedido_atual = estoque.lista_pedidos[estoque.num_pedido_atual]
             printwc("Pedido chegou!", color="green")
         
-        printwc(estoque.produtos_em_estoque, color="light purple")
+
+        printwc(f"Produtos em estoque: {estoque.produtos_em_estoque}", color="purple")
 
         time.sleep(1)
