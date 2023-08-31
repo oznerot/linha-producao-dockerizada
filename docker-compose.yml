@@ -21,21 +21,28 @@ services:
             - mosquitto
     fabrica1:
         image: pahomqtt
-        command: python3 ./fabrica_teste.py -i 1 -n 3 -t empurrada
+        command: python3 ./fabrica_teste.py -i 1 -n 1 -t empurrada
         networks: 
             - mosquitto
         depends_on:
             - mosquitto
     fabrica2:
         image: pahomqtt
-        command: python3 ./fabrica_teste.py -i 2 -n 3 -t puxada
+        command: python3 ./fabrica_teste.py -i 2 -n 1 -t puxada
         networks: 
             - mosquitto
         depends_on:
             - mosquitto
     linha:
         image: pahomqtt
-        command: python3 ./linha_teste.py
+        command: python3 ./linha_teste.py -i 0 -f 1
+        networks:
+            - mosquitto
+        depends_on:
+            - mosquitto
+    linha2:
+        image: pahomqtt
+        command: python3 ./linha_teste.py -i 0 -f 2
         networks:
             - mosquitto
         depends_on:
