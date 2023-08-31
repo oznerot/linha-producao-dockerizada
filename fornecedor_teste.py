@@ -14,9 +14,10 @@ class Fornecedor:
         self.id_fornecedor = id_fornecedor
         # self.estoque_pecas = infinito
 
-    def enviar_pecas(self, lista_pecas, id_almoxarifado, id_fabrica, id_linha):
+    def enviar_pecas(self, lista_pecas, id_almoxarifado, id_fabrica=None, id_linha=None, pedido_proprio=False):
         
-        printwc(lista_pecas, color="cyan")
+        # printwc(lista_pecas, color="cyan")
+        printwc("Enviando peças para o almoxarifado.", color="yellow")
 
         lista_pecas = self.converter_lista(lista_pecas)
 
@@ -27,17 +28,23 @@ class Fornecedor:
         pedido_pecas = pedido_pecas[:-1]
         # printwc(pedido_pecas, color="cyan")
 
-        result = client.publish("almoxarifado_fornecedor",
-                                "fornecedor/" + str(self.id_fornecedor) +   \
-                                "/almoxarifado/" + str(id_almoxarifado) +   \
-                                "/fabrica/" + str(id_fabrica) +   \
-                                "/linha/" + str(id_linha) +   \
-                                "/" + pedido_pecas)
+        if(pedido_proprio):            
+            result = client.publish("almoxarifado_fornecedor",
+                                    "fornecedor/" + str(self.id_fornecedor) +   \
+                                    "/almoxarifado/" + str(id_almoxarifado) +   \
+                                    "/auto/" + pedido_pecas)
+        else:
+            result = client.publish("almoxarifado_fornecedor",
+                                    "fornecedor/" + str(self.id_fornecedor) +   \
+                                    "/almoxarifado/" + str(id_almoxarifado) +   \
+                                    "/fabrica/" + str(id_fabrica) +   \
+                                    "/linha/" + str(id_linha) +   \
+                                    "/" + pedido_pecas)
 
 
     def converter_lista(self, lista1):
 
-        printwc(lista1, color="cyan")
+        # printwc(lista1, color="cyan")
         
         lista2 = lista1.split(";")
 
@@ -62,29 +69,31 @@ def on_connect(client, userdata, flags, return_code):
 def on_message(client, userdata, message):
 
     msg = str(message.payload.decode("utf-8"))
-    printwc(f"Menssagem recebida: {msg}", color="blue")
+    # printwc(f"Menssagem recebida: {msg}", color="blue")
 
     comando = msg.split("/")
 
     match comando[0]:
-        case "almoxarifado" if(comando[3] == fornecedor.id_fornecedor):
+        case "almoxarifado" if((comando[3] == fornecedor.id_fornecedor) & (comando[4] == "fabrica")):
             fornecedor.enviar_pecas(lista_pecas=comando[8], id_almoxarifado=comando[1],
                                     id_fabrica=comando[5], id_linha=comando[7])
-
+        case "almoxarifado" if((comando[3] == fornecedor.id_fornecedor) & (comando[4] == "auto")):
+            fornecedor.enviar_pecas(lista_pecas=comando[5], id_almoxarifado=comando[1])
+            
 parser = argparse.ArgumentParser(description='Argumentos para execução do fornecedor.')
 
-parser.add_argument('-f', '--id_fornecedor', type=str, default="1",
+parser.add_argument('-i', '--id_fornecedor', type=str, default="1",
                     help="Define o ID do fornecedor")
 
 args = parser.parse_args()
 
-broker_hostname ="mosquitto"
+broker_hostname ="localhost"
 port = 1883
 
 # id_fornecedor = input("Escreva o numero do fornecedor: ")
 id_fornecedor = args.id_fornecedor
 client = mqtt.Client("fornecedor" + id_fornecedor)
-#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
+client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect = on_connect
 client.on_message = on_message
 

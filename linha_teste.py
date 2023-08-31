@@ -13,7 +13,7 @@ id_linha = 0
 
 class Linha:
 
-    def __init__(self, id_linha, id_fabrica):
+    def __init__(self, id_linha, id_fabrica, tamanho_lote=48, limiar_pecas=20):
 
         self.id_linha = id_linha
         self.id_fabrica = id_fabrica
@@ -30,6 +30,9 @@ class Linha:
                               [1] * 53,
                               [1] * 53,
                               [1] * 53]
+        
+        self.limiar_pecas = limiar_pecas
+        self.status_buffer = "VERMELHO"
     
     def enviar_pedido_pecas(self, lista_pedido_pecas):
 
@@ -106,6 +109,33 @@ class Linha:
 
         for peca, quantidade in enumerate(lista_pecas_recebidas):
             self.buffer_pecas[peca] += quantidade
+    
+    def checar_estoque_pecas(self):
+        
+        pedido = [0] * 100
+        status = "VERDE"
+        for peca, quantidade in enumerate(self.buffer_pecas):
+            if(quantidade < self.limiar_pecas):
+                status = "VERMELHO"
+                pedido[peca] = self.limiar_pecas + self.limiar_pecas//2
+            elif(quantidade < self.limiar_pecas + self.limiar_pecas//2):
+                status = "AMARELO"
+
+        self.status_buffer = status
+
+        if(sum(pedido) != 0):
+            self.pedir_pecas(pedido)
+
+        match self.status_buffer:
+            case "VERDE":
+                printwc("Estoque com nível bom [VERDE].", color="green")
+                # printwc(self.buffer_pecas, color="green")
+            case "AMARELO":
+                printwc("Estoque com nível baixo [AMARELO].", color="yellow")
+                # printwc(self.buffer_pecas, color="yellow")
+            case "VERMELHO":
+                printwc("Estoque com nível crítico [VERMELHO].", color="red")
+                # printwc(self.buffer_pecas, color="red")
 
     def converter_lista(self, lista1):
         
@@ -145,7 +175,7 @@ class Linha:
 def on_connect(client, userdata, flags, return_code):
 
     if return_code == 0:
-        print("Linha conectada.")
+        printwc("Linha conectada.", color="purple")
         client.subscribe("fabrica")
         client.subscribe("fabrica_linha")
     else:
@@ -180,7 +210,7 @@ def on_message(client, userdata, message):
             #     peca = int(pecas[i])
             #     pecasNaLinha[peca] += 1
             linha.handler(acao="receber peças", lista=comando[5])
-                
+            
         case "pedido_produto" if((comando[0] == "fabrica") & (comando[1] == linha.id_fabrica) & (comando[3] == linha.id_linha)):
             # print(comando[5])
             # linha.handler(acao="enviar produtos", lista=comando[5])
@@ -227,21 +257,23 @@ def on_message(client, userdata, message):
 
 parser = argparse.ArgumentParser(description='Argumentos para execução da linha.')
 
-parser.add_argument('-l', '--id_linha', type=str, default="1",
+parser.add_argument('-i', '--id_linha', type=str, default="0",
                     help="Define o ID da linha")
 parser.add_argument('-f', '--id_fabrica', type=str, default="2",
-                    help="Define o ID da fábrica da linha")
+                    help="Define o ID da fábrica que a linha pertence")
+parser.add_argument('-l', '--limiar_pecas', type=int, default="20",
+                    help="Define o limiar de peças do nível vermelho")
 
 args = parser.parse_args()
 
-broker_hostname ="mosquitto"
+broker_hostname ="localhost"
 port = 1883 
 # id_linha = input("Escreva o numero da linha: ")
 # id_fabrica = input("Escreva o numero da fábrica: ")
 id_linha = args.id_linha
 id_fabrica = args.id_fabrica
 client = mqtt.Client("linha" + id_linha)
-#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
+client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect=on_connect
 client.on_message=on_message
 
@@ -253,7 +285,7 @@ client.loop_start()
 # pedidoatual = 0
 # do = True
 
-linha = Linha(id_linha=id_linha, id_fabrica=id_fabrica)
+linha = Linha(id_linha=id_linha, id_fabrica=id_fabrica, limiar_pecas=args.limiar_pecas)
 
 # while(do):
 #     if(client.is_connected()):
@@ -268,4 +300,5 @@ linha = Linha(id_linha=id_linha, id_fabrica=id_fabrica)
 
 while(True):
     if(client.is_connected()):
+        linha.checar_estoque_pecas()
         time.sleep(1)
