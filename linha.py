@@ -1,6 +1,7 @@
 #Linha
 import paho.mqtt.client as mqtt 
 import time  
+import sys
 
 npecas = 10
 produto1 = [0,1,2,3,4,5,8,9]
@@ -63,7 +64,9 @@ def montarpedido(pedido):
 
 broker_hostname ="localhost"
 port = 1883 
-nlinha = input("escreva o numero da linha")
+#nlinha = input("escreva o numero da linha")
+if len(sys.argv) != 2: print("uso correto: python3 fabrica.py 1")
+nlinha = sys.argv[1]
 client = mqtt.Client("linha" + nlinha)
 # client.username_pw_set(username="user_name", password="password") # uncomment if you use password auth
 client.on_connect=on_connect
