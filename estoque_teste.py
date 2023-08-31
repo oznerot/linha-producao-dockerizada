@@ -19,43 +19,25 @@ class Estoque:
         self.id_fabricas_empurradas = id_fabricas_empurradas if type(id_fabricas_empurradas) == "list" else [id_fabricas_empurradas]
         self.id_fabricas_puxadas = id_fabricas_puxadas if type(id_fabricas_puxadas) == "list" else [id_fabricas_puxadas]
 
-        # self.fabricas_empurradas = self.id_fabricas_empurradas
         self.pedidos_fabricas_puxadas = dict()
         for id in self.id_fabricas_puxadas:
             self.pedidos_fabricas_puxadas[id] = []
 
-        # printwc(self.id_fabricas_empurradas, color="yellow")
-        # printwc(self.id_fabricas_puxadas, color="yellow")
-
-        # self.num_pedidos_atuais = dict()
         for id in self.id_fabricas_puxadas:
             self.pedidos_fabricas_puxadas[id].append(0)
         
-        # printwc(self.pedidos_fabricas_puxadas, color="yellow")
-
         self.num_pedidos = num_pedidos
         for id in self.id_fabricas_puxadas:
             for i in range(num_pedidos):
                 self.pedidos_fabricas_puxadas[id].append(random.sample(range(min_produto, max_produto), 5))
-        
-        # printwc(self.pedidos_fabricas_puxadas, color="yellow")
 
         self.pedidos_atuais = dict()
         for id in self.id_fabricas_puxadas:
             self.pedidos_atuais[id] = self.pedidos_fabricas_puxadas[id][1]
 
-        # printwc(self.pedidos_atuais, color="yellow")
-
         self.tem_pedidos_pendentes = True
     
     def esperar_pedido(self):
-
-        # if(sum(self.pedido_atual) == 0):
-        #     return True
-        
-        # else:
-        #     self.mandar_pedido()
-        #     return False
 
         printwc(self.pedidos_atuais, color="yellow")
 
@@ -65,11 +47,7 @@ class Estoque:
             if(sum(self.pedidos_atuais[id]) == 0):
                 pedidos_concluidos.append(id)
             else:
-                # pedidos_pendentes.append(self.pedidos_atuais[id])
                 self.mandar_pedido(self.pedidos_atuais[id])
-        
-        # if(not pedidos_pendentes):
-        #     self.mandar_pedido(pedidos_pendentes)
         
         return pedidos_concluidos
     
@@ -81,7 +59,6 @@ class Estoque:
             mensagem_pedido += str(produto) + "," + str(quantidade) + ";"
         
         mensagem_pedido = mensagem_pedido[:-1]
-        # print(mensagem_pedido)
 
         result = client.publish("estoque_fabrica", "estoque/" + str(self.id_estoque) + "/fabrica/2/" + mensagem_pedido)
 
@@ -89,19 +66,13 @@ class Estoque:
         
         lista2 = lista1.split(";")
 
-        # printwc(lista2, color="cyan")
-
         lista3 = []
         for pedido_produto in lista2:
             lista3.append(pedido_produto.split(","))
         
-        # printwc(lista3, color="cyan")
-        
         lista4 = [0] * len(lista3)
         for indice, quantidade in lista3:
             lista4[int(indice)] = int(quantidade)
-
-        # printwc(lista4, color="cyan")
         
         return lista4
     
@@ -120,35 +91,9 @@ def on_message(client, userdata, message):
 
     comando = msg.split("/")
 
-    # estoque/0a,1b,2c,3d,4e
-    # letras indicam a quantidade do produto
-    # if(comando[0] == "fabrica"):
-
-    #     # printwc(comando[2], color="cyan")
-
-    #     pedido = comando[4].split(";")
-
-    #     lista_produtos = []
-    #     for pedido_produto in pedido:
-    #         lista_produtos.append(pedido_produto.split(","))
-        
-    #     # printwc(lista_produtos, color="cyan")
-
-    #     lista_produtos_int = []
-    #     for pedido_produto in lista_produtos:
-    #         lista_produtos_int.append([int(pedido_produto[0]), int(pedido_produto[1])])
-
-    #     # printwc(lista_produtos_int, color="cyan")
-
-    #     for produto, quantidade in lista_produtos_int:
-    #         estoque.pedido_atual[produto] -= quantidade
-    #         estoque.produtos_em_estoque[produto] += quantidade
-
     match comando[0]:
         case "fabrica" if(int(comando[1]) in estoque.id_fabricas_puxadas):
             lista_produtos = estoque.converter_lista(comando[4])
-
-            # printwc(lista_produtos, color="yellow")
 
             for produto, quantidade in enumerate(lista_produtos):
                 estoque.pedidos_atuais[int(comando[1])][produto] -= quantidade
@@ -160,34 +105,8 @@ def on_message(client, userdata, message):
             printwc(lista_produtos, color="yellow")
 
             for produto, quantidade in enumerate(lista_produtos):
-                # estoque.pedidos_atuais[comando[1]][produto] -= quantidade
                 estoque.produtos_em_estoque[produto] += quantidade
 
-# def mandar_pedido(pedido):
-
-#     mensagem_pedido = ""
-
-#     for produto, quantidade in enumerate(pedido):
-#         mensagem_pedido += str(produto) + "," + str(quantidade) + ";"
-    
-#     mensagem_pedido = mensagem_pedido[:-1]
-#     print(mensagem_pedido)
-
-#     result = client.publish("estoque_fabrica", "estoque/" + str(id_estoque) + "/" + mensagem_pedido)
-
-# def esperar_pedido(pedido_atual):
-
-#     if(sum(pedido_atual) == 0):
-#         pedido_foi_feito = False
-#         return True
-    
-#     elif(pedido_foi_feito == False):
-#         mandar_pedido(pedido_atual)
-#         pedido_foi_feito = True
-#         return False
-    
-#     else:
-#         return False
 
 parser = argparse.ArgumentParser(description='Argumentos para execução do estoque.')
 
