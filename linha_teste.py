@@ -145,7 +145,7 @@ class Linha:
 def on_connect(client, userdata, flags, return_code):
 
     if return_code == 0:
-        printwc("Linha conectada.", color="purple")
+        print("Linha conectada.")
         client.subscribe("fabrica")
         client.subscribe("fabrica_linha")
     else:

@@ -12,6 +12,10 @@ services:
             - /mosquitto/data:/mosquitto/data
         networks:
             - mosquitto
+    fabrica1:
+        image: pahomqtt
+        command: python3 ./fabrica_teste1.py
+   
 networks:
     mosquitto:
         name: mosquitto
