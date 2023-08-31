@@ -12,11 +12,9 @@ class Fornecedor:
     def __init__(self, id_fornecedor=1):
 
         self.id_fornecedor = id_fornecedor
-        # self.estoque_pecas = infinito
 
     def enviar_pecas(self, lista_pecas, id_almoxarifado, id_fabrica=None, id_linha=None, pedido_proprio=False):
         
-        # printwc(lista_pecas, color="cyan")
         printwc("Enviando peças para o almoxarifado.", color="yellow")
 
         lista_pecas = self.converter_lista(lista_pecas)
@@ -26,7 +24,6 @@ class Fornecedor:
             pedido_pecas += str(peca) + "," + str(quantidade) + ";"
         
         pedido_pecas = pedido_pecas[:-1]
-        # printwc(pedido_pecas, color="cyan")
 
         if(pedido_proprio):            
             result = client.publish("almoxarifado_fornecedor",
@@ -43,8 +40,6 @@ class Fornecedor:
 
 
     def converter_lista(self, lista1):
-
-        # printwc(lista1, color="cyan")
         
         lista2 = lista1.split(";")
 
@@ -69,7 +64,6 @@ def on_connect(client, userdata, flags, return_code):
 def on_message(client, userdata, message):
 
     msg = str(message.payload.decode("utf-8"))
-    # printwc(f"Menssagem recebida: {msg}", color="blue")
 
     comando = msg.split("/")
 
@@ -90,10 +84,8 @@ args = parser.parse_args()
 broker_hostname ="mosquitto"
 port = 1883
 
-# id_fornecedor = input("Escreva o numero do fornecedor: ")
 id_fornecedor = args.id_fornecedor
 client = mqtt.Client("fornecedor" + id_fornecedor)
-#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect = on_connect
 client.on_message = on_message
 

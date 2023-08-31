@@ -26,9 +26,6 @@ class Fabrica:
             pedido += str(peca) + "," + str(quantidade) + ";"
         pedido = pedido[:-1]
 
-        # printwc(pedido, color="cyan")
-
-        # result = client.publish("fabrica_linha", "fabrica/" + str(self.id_fabrica) + "/linha/" + str(id_linha) + "/pedido_pecas/" + pedido)
         result = client.publish("fabrica_almoxarifado",
                                 "fabrica/" + str(self.id_fabrica) +             \
                                 "/almoxarifado/" + str(self.id_almoxarifado) +  \
@@ -41,12 +38,9 @@ class Fabrica:
             pedido += str(peca) + "," + str(quantidade) + ";"
         pedido = pedido[:-1]
 
-        # printwc(pedido, color="cyan")
-
-        # result = client.publish("fabrica_linha", "fabrica/" + str(self.id_fabrica) + "/linha/" + str(id_linha) + "/pedido_pecas/" + pedido)
         result = client.publish("fabrica_linha",
-                                "fabrica/" + str(self.id_fabrica) +     \
-                                "/linha/" + str(id_linha) +        \
+                                "fabrica/" + str(self.id_fabrica) +     
+                                "/linha/" + str(id_linha) +        
                                 "/pedido_pecas/" + pedido)
 
     def enviar_produtos_estoque(self, lista_produtos):
@@ -58,8 +52,6 @@ class Fabrica:
             pedido += str(produto) + "," + str(quantidade) + ";"
         pedido = pedido[:-1]
 
-        # printwc(pedido, color="cyan")
-
         result = client.publish("estoque_fabrica", "fabrica/" + str(id_fabrica) + "/estoque/1/" + pedido)
 
     def enviar_pedido_linha(self, lista_produtos, id_linha=0):
@@ -68,8 +60,6 @@ class Fabrica:
         for produto, quantidade in enumerate(lista_produtos):
             pedido += str(produto) + "," + str(quantidade) + ";"
         pedido = pedido[:-1]
-
-        # printwc(pedido, color="cyan")
 
         result = client.publish("fabrica_linha",
                                 "fabrica/" + str(id_fabrica) +  \
@@ -91,7 +81,6 @@ class Fabrica:
         self.enviar_pedido_linha(parte_lista_produto, id_linha=self.num_linhas-1)
     
     def converter_lista(self, lista1):
-        # printwc(lista1, color="cyan")
         
         lista2 = lista1.split(";")
 
@@ -112,7 +101,6 @@ class Fabrica:
 
         match acao:
             case "enviar pedido para linha":
-                # self.enviar_pedido_linha(lista)
                 self.enviar_pedido_linha_distribuido(lista)
 
             case "enviar pedido de peças para almoxarifado":
@@ -125,18 +113,13 @@ class Fabrica:
                 self.enviar_produtos_estoque(lista)
 
             case "enviar lote para linha":
-                # quinto = self.tamanho_lote // 5
-                # lista = random.sample(range(quinto + quinto//2, quinto + quinto//2), 5)
                 lista = [10, 10, 10, 9, 9]
-                # self.enviar_pedido_linha(lista)
                 self.enviar_pedido_linha_distribuido(lista)
 
 def on_connect(client, userdata, flags, return_code):
 
     if return_code == 0:
         printwc("Fábrica conectada.", color="purple")
-        # client.subscribe("fabrica")
-        # client.subscribe("fabricas")
         client.subscribe("estoque_fabrica")
         client.subscribe("fabrica_linha")
         client.subscribe("fabrica_almoxarifado")
@@ -150,27 +133,10 @@ def on_message(client, userdata, message):
     printwc(f"Menssagem recebida: {msg}", color="blue")
     
     comando = msg.split("/")
-    #printwc(comando)
-    # if(comando[0] == "linha"):
-    #     pecasPedidas = comando[2].split(",")
-    #     pecas = []
-    #     for i in range(len(pecasPedidas)):
-    #         pecas.append(int(pecasPedidas[i]))
-    #     #printwc(pecas)
-    #     enviarPecas(comando[1], pecas)
-
-    # printwc(fabrica.tipo_fabrica, color="cyan")
     
     match comando[0]:
 
         case "linha" if((comando[3] == id_fabrica) & (comando[4] == "pedido_pecas")):
-
-            # pecasPedidas = comando[5].split(",")
-            # pecas = []
-            # for i in range(len(pecasPedidas)):
-            #     pecas.append(int(pecasPedidas[i]))
-            # #printwc(pecas)
-            # enviarPecas(comando[1], pecas)
 
             fabrica.handler(acao="enviar pedido de peças para almoxarifado", lista=comando[5], id_linha=comando[1])
         
@@ -178,96 +144,13 @@ def on_message(client, userdata, message):
 
             lista = fabrica.converter_lista(comando[5])
 
-            # printwc(lista, color="cyan")
-
-            # fabrica.enviar_produtos_estoque(lista)
-
             fabrica.handler(acao="enviar pedido de produtos para o estoque", lista=comando[5])
 
         case "estoque" if((comando[3] == fabrica.id_fabrica) & (fabrica.tipo_fabrica == "puxada")):
-            # printwc(comando[2], color="cyan")
-
-            # pedido = comando[4].split(";")
-
-            # # printwc(pedido, color="cyan")
-
-            # lista_produtos = []
-            # for pedido_produto in pedido:
-            #     lista_produtos.append(pedido_produto.split(","))
-            
-            # # printwc(lista_produtos, color="cyan")
-
-            # lista_produtos_int = [0] * 5
-            # for produto, quantidade in lista_produtos:
-            #     lista_produtos_int[int(produto)] = int(quantidade)
-
-            # printwc(lista_produtos_int, color="cyan")
-
-            # enviar_produtos_estoque(lista_produtos_int)
-            # enviar_pedido_linha(lista_produtos_int)
-
             fabrica.handler(acao="enviar pedido para linha", lista=comando[4])
         
         case "almoxarifado" if(comando[3] == fabrica.id_fabrica):
-
             fabrica.handler(acao="receber pedido do almoxarifado", lista=comando[6], id_linha=comando[5])
-            
-
-# def enviarPecas(linha, pecas):
-#     pecas_faltantes = []
-#     contador = 0
-#     for i in range (len(pecas)):
-#         if(pecasNaFabrica[pecas[i]] == 0):
-#             contador += 1
-#             pecas_faltantes.append(pecas[i])
-#     if(contador == 0):
-#         for i in range (len(pecas)):
-#             pecasNaFabrica[pecas[i]] -= 1
-#         enviar_pecas(linha, pecas)
-#     else:
-#         pedirPecas(pecas)
-
-###############################################################
-
-# def enviar_pecas(linha, pecas):
-#     envio = ""
-#     for i in range (len(pecas)):
-#         envio = envio + str(pecas[i])
-#         if(i < len(pecas) - 1):
-#             envio = envio + ","
-#     result = client.publish("fabrica_linha", "fabrica/" + str(id_fabrica) + "/linha/" + str(linha) + "/pedido_pecas/" + envio)
-#     #printwc(envio)
-
-# def pedirPecas(pecas):
-#     pedido = ""
-#     for i in range (len(pecas)):
-#         pedido = pedido + str(pecas[i])
-#         if(i < len(pecas) - 1):
-#             pedido = pedido + ","
-#     result = client.publish("fabricas", "fabrica/" + str(id_fabrica) + "/" + pedido)
-#     #printwc(pedido)
-
-# def enviar_produtos_estoque(lista_produtos):
-
-#     pedido = ""
-#     for produto, quantidade in enumerate(lista_produtos):
-#         pedido += str(produto) + "," + str(quantidade) + ";"
-#     pedido = pedido[:-1]
-
-#     # printwc(pedido, color="cyan")
-
-#     result = client.publish("estoque_fabrica", "fabrica/" + str(id_fabrica) + "/estoque/1/" + pedido)
-
-# def enviar_pedido_linha(lista_produtos):
-
-#     pedido = ""
-#     for produto, quantidade in enumerate(lista_produtos):
-#         pedido += str(produto) + "," + str(quantidade) + ";"
-#     pedido = pedido[:-1]
-
-#     # printwc(pedido, color="cyan")
-
-#     result = client.publish("fabrica_linha", "fabrica/" + str(id_fabrica) + "/linha/1/pedido_produto/" + pedido)
 
 parser = argparse.ArgumentParser(description='Argumentos para execução da fábrica.')
 
@@ -283,10 +166,8 @@ args = parser.parse_args()
 broker_hostname ="mosquitto"
 port = 1883
 
-# id_fabrica = input("Escreva o numero da fabrica: ")
 id_fabrica = args.id_fabrica
 client = mqtt.Client("fabrica" + id_fabrica)
-#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect=on_connect
 client.on_message=on_message
 

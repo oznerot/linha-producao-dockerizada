@@ -19,8 +19,6 @@ class Almoxarifado:
 
     def montar_pedido_pecas(self, lista_pedido_pecas, id_fabrica, id_linha):
         
-        # lista_pedido_pecas = self.converter_lista(lista_pedido_pecas)
-
         pedido_completo = True
         pecas_consumidas = [0] * 100
         pecas_faltantes = [0] * 100
@@ -42,15 +40,11 @@ class Almoxarifado:
     def enviar_pedido_pecas(self, lista_pecas, id_fabrica, id_linha):
 
         printwc(f"Enviando peças para a fábrica {id_fabrica} (linha {id_linha}):", color="yellow")
-        # printwc(lista_pecas, color="yellow")
-
         pedido_pecas = ""
         for peca, quantidade in enumerate(lista_pecas):
             pedido_pecas += str(peca) + "," + str(quantidade) + ";"
         
         pedido_pecas = pedido_pecas[:-1]
-        # print(pedido_pecas)
-
         result = client.publish("fabrica_almoxarifado",
                                 "almoxarifado/" + str(self.id_almoxarifado) +   \
                                 "/fabrica/" + str(id_fabrica) +                 \
@@ -59,12 +53,10 @@ class Almoxarifado:
     def pedir_pecas(self, lista_pecas, id_fabrica=None, id_linha=None, pedido_proprio=False):
 
         printwc("Enviando pedido de peças ao fornecedor", color="red")
-        # printwc(lista_pecas, color="red")
-        
         pedido_pecas = ""
         for peca, quantidade in enumerate(lista_pecas):
             pedido_pecas += str(peca) + "," + str(quantidade) + ";"
-        
+  
         pedido_pecas = pedido_pecas[:-1]
 
         if(pedido_proprio):
@@ -104,18 +96,13 @@ class Almoxarifado:
         match self.status_estoque_pecas:
             case "VERDE":
                 printwc("Estoque com nível bom [VERDE].", color="green")
-                # printwc(self.estoque_pecas, color="green")
             case "AMARELO":
                 printwc("Estoque com nível baixo [AMARELO].", color="yellow")
-                # printwc(self.estoque_pecas, color="yellow")
             case "VERMELHO":
                 printwc("Estoque com nível crítico [VERMELHO].", color="red")
-                # printwc(self.estoque_pecas, color="red")
 
     def converter_lista(self, lista1):
-
-        # printwc(lista1, color="cyan")
-        
+      
         lista2 = lista1.split(";")
 
         lista3 = []
@@ -153,12 +140,8 @@ def on_connect(client, userdata, flags, return_code):
 def on_message(client, userdata, message):
 
     msg = str(message.payload.decode("utf-8"))
-    # printwc(f"Menssagem recebida: {msg}", color="blue")
 
     comando = msg.split("/")
-
-    # estoque/0a,1b,2c,3d,4e
-    # letras indicam a quantidade do produto
 
     match comando[0]:
         case "fabrica":
@@ -180,10 +163,8 @@ args = parser.parse_args()
 broker_hostname ="mosquitto"
 port = 1883
 
-# id_almoxarifado = input("Escreva o numero do almoxarifado: ")
 id_almoxarifado = args.id_almoxarifado
 client = mqtt.Client("almoxarifado" + id_almoxarifado)
-#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect = on_connect
 client.on_message = on_message
 

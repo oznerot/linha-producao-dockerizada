@@ -205,17 +205,13 @@ args = parser.parse_args()
 broker_hostname ="mosquitto"
 port = 1883
 
-# id_estoque = input("Escreva o numero do estoque: ")
 id_estoque = args.id_estoque
 client = mqtt.Client("estoque" + id_estoque)
-#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect = on_connect
 client.on_message = on_message
 
 client.connect(broker_hostname, port) 
 client.loop_start()
-
-# print(args.id_fabricas_empurradas, args.id_fabricas_puxadas)
 
 estoque = Estoque(id_estoque, num_pedidos=args.num_pedidos, min_produto=0, max_produto=5, id_fabricas_empurradas=args.id_fabricas_empurradas, id_fabricas_puxadas=args.id_fabricas_puxadas)
 
@@ -223,7 +219,6 @@ while(True):
     if(not client.is_connected()):
         pass
     
-    # elif(estoque.num_pedido_atual < estoque.num_pedidos):
     elif(estoque.tem_pedidos_pendentes):
         for id in estoque.pedidos_fabricas_puxadas:
             printwc(f"Pedido {estoque.pedidos_fabricas_puxadas[id][0]}: {estoque.pedidos_atuais[id]}", color="red")
@@ -234,10 +229,7 @@ while(True):
                 estoque.pedidos_fabricas_puxadas[id][0] += 1
                 if estoque.pedidos_fabricas_puxadas[id][0] <= estoque.num_pedidos:
                     estoque.pedidos_atuais[id] = estoque.pedidos_fabricas_puxadas[id][estoque.pedidos_fabricas_puxadas[id][0]]
-            # if estoque.num_pedido_atual < estoque.num_pedidos:
-            #     estoque.pedido_atual = estoque.lista_pedidos[estoque.num_pedido_atual]
             printwc("Pedido chegou!", color="green")
         
-
         printwc(f"Produtos em estoque: {estoque.produtos_em_estoque}", color="purple")
         time.sleep(1)
