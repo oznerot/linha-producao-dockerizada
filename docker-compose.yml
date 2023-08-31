@@ -14,21 +14,21 @@ services:
             - mosquitto
     estoque:
         image: pahomqtt
-        command: python3 ./estoque_teste.py -np 10
+        command: python3 ./estoque_teste.py -n 10
         networks:
             - mosquitto
         depends_on:
             - mosquitto
     fabrica1:
         image: pahomqtt
-        command: python3 ./fabrica_teste.py -np 1
+        command: python3 ./fabrica_teste.py -i 1 -n 3 -t empurrada
         networks: 
             - mosquitto
         depends_on:
             - mosquitto
     fabrica2:
         image: pahomqtt
-        command: python3 ./fabrica_teste.py -np 2
+        command: python3 ./fabrica_teste.py -i 2 -n 3 -t puxada
         networks: 
             - mosquitto
         depends_on:
@@ -54,7 +54,7 @@ services:
             - mosquitto
         depends_on:
             - mosquitto
-    
+
 networks:
     mosquitto:
         name: mosquitto

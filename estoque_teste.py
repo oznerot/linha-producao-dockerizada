@@ -202,13 +202,13 @@ parser.add_argument('-fp', '--id_fabricas_puxadas', nargs="+", type=int, default
 
 args = parser.parse_args()
 
-broker_hostname ="localhost"
+broker_hostname ="mosquitto"
 port = 1883
 
 # id_estoque = input("Escreva o numero do estoque: ")
 id_estoque = args.id_estoque
 client = mqtt.Client("estoque" + id_estoque)
-client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
+#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect = on_connect
 client.on_message = on_message
 

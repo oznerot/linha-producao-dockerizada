@@ -280,7 +280,7 @@ parser.add_argument('-t', '--tipo_fabrica', type=str, default="puxada",
 
 args = parser.parse_args()
 
-broker_hostname ="localhost"
+broker_hostname ="mosquitto"
 port = 1883
 
 # id_fabrica = input("Escreva o numero da fabrica: ")
