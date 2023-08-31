@@ -2,4 +2,4 @@
 #cria imagem
 docker build -t pahomqtt .
 #cria containers
-docker compose up
+docker compose up 

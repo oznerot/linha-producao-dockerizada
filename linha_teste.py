@@ -157,7 +157,7 @@ def on_connect(client, userdata, flags, return_code):
 def on_message(client, userdata, message):
 
     msg = str(message.payload.decode("utf-8"))
-    printwc(f"Menssagem recebida: {msg}", color="blue")
+    #printwc(f"Menssagem recebida: {msg}", color="blue")
 
     comando = msg.split("/")
     

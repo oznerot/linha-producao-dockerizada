@@ -81,13 +81,14 @@ def on_connect(client, userdata, flags, return_code):
     if return_code == 0:
         printwc("Estoque conectado.", color="purple")
         client.subscribe("estoque_fabrica")
+        client.subscribe("monitor")
     else:
         printwc(f"Não foi possível conectar o estoque. Return code: {return_code}", color="purple")
 
 def on_message(client, userdata, message):
 
     msg = str(message.payload.decode("utf-8"))
-    printwc(f"Menssagem recebida: {msg}", color="blue")
+    #printwc(f"Menssagem recebida: {msg}", color="blue")
 
     comando = msg.split("/")
 
@@ -149,6 +150,14 @@ while(True):
                 if estoque.pedidos_fabricas_puxadas[id][0] <= estoque.num_pedidos:
                     estoque.pedidos_atuais[id] = estoque.pedidos_fabricas_puxadas[id][estoque.pedidos_fabricas_puxadas[id][0]]
             printwc("Pedido chegou!", color="green")
+        else:
+            estoque.tem_pedidos_pendentes = False
         
         printwc(f"Produtos em estoque: {estoque.produtos_em_estoque}", color="purple")
-        time.sleep(1)
+        produtosEmEstoque = ""
+        for i in range(0, 5):
+            produtosEmEstoque = produtosEmEstoque
+            if(i < 4):
+                produtosEmEstoque = produtosEmEstoque + ","
+        result = client.publish("monitor", "estoque/" + str(estoque.id_estoque) + "/" + produtosEmEstoque)
+    time.sleep(1)
