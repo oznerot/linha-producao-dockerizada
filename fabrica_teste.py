@@ -286,7 +286,7 @@ port = 1883
 # id_fabrica = input("Escreva o numero da fabrica: ")
 id_fabrica = args.id_fabrica
 client = mqtt.Client("fabrica" + id_fabrica)
-client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
+#client.username_pw_set(username="kenjiueno", password="123456") # uncomment if you use password auth
 client.on_connect=on_connect
 client.on_message=on_message
 
