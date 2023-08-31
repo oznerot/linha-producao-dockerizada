@@ -19,16 +19,20 @@ services:
             - mosquitto
         depends_on:
             - mosquitto
-    fabrica2:
+    fabrica1:
         image: pahomqtt
-        command: python3 ./fabrica_teste2.py
+        command: python3 ./fabrica_teste.py -np 1
         networks: 
             - mosquitto
         depends_on:
             - mosquitto
-    #fabrica1:
-        #image: pahomqtt
-        #command: python3 ./fabrica_teste1.py
+    fabrica2:
+        image: pahomqtt
+        command: python3 ./fabrica_teste.py -np 2
+        networks: 
+            - mosquitto
+        depends_on:
+            - mosquitto
     linha:
         image: pahomqtt
         command: python3 ./linha_teste.py
