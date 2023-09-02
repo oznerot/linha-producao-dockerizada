@@ -16,7 +16,7 @@ class Almoxarifado:
         self.id_fornecedor = id_fornecedor
         self.limiar_estoque_pecas = limiar_estoque_pecas
         self.status_estoque_pecas = "VERMELHO"
-
+    #monta o pedido de peças da fábrica, caso não tenha peças suficientes, pede ao fornecedor
     def montar_pedido_pecas(self, lista_pedido_pecas, id_fabrica, id_linha):
         
         pedido_completo = True
@@ -36,7 +36,7 @@ class Almoxarifado:
             self.enviar_pedido_pecas(lista_pedido_pecas, id_fabrica, id_linha)
         else:
             self.pedir_pecas(pecas_faltantes, id_fabrica, id_linha)
-    
+    #envia o pedido de peças para a fábrica
     def enviar_pedido_pecas(self, lista_pecas, id_fabrica, id_linha):
 
         printwc(f"Enviando peças para a fábrica {id_fabrica} (linha {id_linha}):", color="yellow")
@@ -49,7 +49,7 @@ class Almoxarifado:
                                 "almoxarifado/" + str(self.id_almoxarifado) +   \
                                 "/fabrica/" + str(id_fabrica) +                 \
                                 "/linha/" + str(id_linha) + "/" + pedido_pecas)
-
+    #pede peças ao fornecedor
     def pedir_pecas(self, lista_pecas, id_fabrica=None, id_linha=None, pedido_proprio=False):
 
         printwc("Enviando pedido de peças ao fornecedor", color="red")
@@ -71,7 +71,7 @@ class Almoxarifado:
                                     "/fabrica/" + str(id_fabrica) +                 \
                                     "/linha/" + str(id_linha) +                     \
                                     "/" + pedido_pecas)
-
+    #recebe peças do fornecedor
     def receber_pecas(self, lista_pecas, id_fabrica, id_linha):
 
         for peca, quantidade in enumerate(lista_pecas):
@@ -100,7 +100,7 @@ class Almoxarifado:
                 printwc("Estoque com nível baixo [AMARELO].", color="yellow")
             case "VERMELHO":
                 printwc("Estoque com nível crítico [VERMELHO].", color="red")
-
+    
     def converter_lista(self, lista1):
       
         lista2 = lista1.split(";")
@@ -114,7 +114,7 @@ class Almoxarifado:
             lista4[int(indice)] = int(quantidade)
         
         return lista4
-
+    
     def handler(self, acao, lista, id_fabrica=None, id_linha=None, pedido_proprio=False):
 
         lista = self.converter_lista(lista)
@@ -151,6 +151,7 @@ def on_message(client, userdata, message):
         case "fornecedor" if(comando[4] == "auto"):
             almoxarifado.handler(acao="receber peças do fornecedor (abastecimento prórpio)", lista=comando[8], pedido_proprio=True)
 
+#argumentos para execução do almoxarifado
 parser = argparse.ArgumentParser(description='Argumentos para execução do almoxarifado.')
 
 parser.add_argument('-i', '--id_almoxarifado', type=str, default="1",

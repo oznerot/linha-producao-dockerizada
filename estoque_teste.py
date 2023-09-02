@@ -47,7 +47,7 @@ class Estoque:
             if(sum(self.pedidos_atuais[id]) == 0):
                 pedidos_concluidos.append(id)
             else:
-                self.mandar_pedido(self.pedidos_atuais[id])
+                self.mandar_pedido(self.pedidos_atuais[=id])
         
         return pedidos_concluidos
     
@@ -108,7 +108,7 @@ def on_message(client, userdata, message):
             for produto, quantidade in enumerate(lista_produtos):
                 estoque.produtos_em_estoque[produto] += quantidade
 
-
+# Argumentos
 parser = argparse.ArgumentParser(description='Argumentos para execução do estoque.')
 
 parser.add_argument('-i', '--id_estoque', type=str, default="1",

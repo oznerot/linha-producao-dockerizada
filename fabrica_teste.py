@@ -42,7 +42,7 @@ class Fabrica:
                                 "fabrica/" + str(self.id_fabrica) +     
                                 "/linha/" + str(id_linha) +        
                                 "/pedido_pecas/" + pedido)
-
+    #envia o pedido de peças para o almoxarifado
     def enviar_produtos_estoque(self, lista_produtos):
 
         printwc(f"Enviando produtos para o estoque: {lista_produtos}", color="yellow")
@@ -53,7 +53,7 @@ class Fabrica:
         pedido = pedido[:-1]
 
         result = client.publish("estoque_fabrica", "fabrica/" + str(id_fabrica) + "/estoque/1/" + pedido)
-
+    
     def enviar_pedido_linha(self, lista_produtos, id_linha=0):
 
         pedido = ""
@@ -65,7 +65,7 @@ class Fabrica:
                                 "fabrica/" + str(id_fabrica) +  \
                                 "/linha/" + str(id_linha) +     \
                                 "/pedido_produto/" + pedido)
-
+    
     def enviar_pedido_linha_distribuido(self, lista_produtos):
 
         parte_lista_produto = [0] * 5
@@ -152,6 +152,7 @@ def on_message(client, userdata, message):
         case "almoxarifado" if(comando[3] == fabrica.id_fabrica):
             fabrica.handler(acao="receber pedido do almoxarifado", lista=comando[6], id_linha=comando[5])
 
+#argumentos para execução da fábrica
 parser = argparse.ArgumentParser(description='Argumentos para execução da fábrica.')
 
 parser.add_argument('-i', '--id_fabrica', type=str, default="2",

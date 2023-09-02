@@ -32,7 +32,7 @@ class Linha:
         
         self.limiar_pecas = limiar_pecas
         self.status_buffer = "VERMELHO"
-    
+    #envia o pedido de peças para o almoxarifado
     def enviar_pedido_pecas(self, lista_pedido_pecas):
 
         self.pedido_pecas = ""
@@ -43,7 +43,7 @@ class Linha:
         printwc(f"Enviando pedido de peças: {self.pedido_pecas}", color="yellow")
 
         result = client.publish("fabrica_linha", "linha/" + str(self.id_linha) + "/fabrica/" + str(self.id_fabrica) + "/pedido_pecas/" + self.pedido_pecas)
-
+    #envia o pedido de produtos para o estoque
     def enviar_pedido_produtos(self, lista_pedido_produtos):
 
         printwc(f"Enviando produtos: {lista_pedido_produtos}", color="green")
@@ -55,7 +55,7 @@ class Linha:
 
 
         result = client.publish("fabrica_linha", "linha/" + str(id_linha) + "/fabrica/" + str(id_fabrica) + "/pedido_produtos/" + pedido)
-
+    #monta o pedido de produtos da linha, caso não tenha peças suficientes, pede ao almoxarifado
     def montar_pedido_produtos(self, lista_pedido_produtos):
 
         pedido_completo = True
@@ -78,7 +78,7 @@ class Linha:
             self.enviar_pedido_produtos(lista_pedido_produtos)
         else:
             self.pedir_pecas(pecas_faltantes)
-    
+    #pede peças ao almoxarifado
     def pedir_pecas(self, lista_pedido_pecas):
 
         pedido = ""
@@ -86,14 +86,14 @@ class Linha:
             pedido += str(peca) + "," + str(quantidade) + ";"
         pedido = pedido[:-1]
         result = client.publish("fabrica_linha", "linha/" + str(self.id_linha) + "/fabrica/" + str(self.id_fabrica) + "/pedido_pecas/" + pedido)
-    
+    #recebe as peças do almoxarifado
     def receber_pecas(self, lista_pecas_recebidas):
 
         printwc(f"Recebendo pecas: {lista_pecas_recebidas}", color="yellow")
 
         for peca, quantidade in enumerate(lista_pecas_recebidas):
             self.buffer_pecas[peca] += quantidade
-    
+    #checa o estoque (sistema KANBAN)
     def checar_estoque_pecas(self):
         
         pedido = [0] * 100
@@ -117,7 +117,7 @@ class Linha:
                 printwc("Estoque com nível baixo [AMARELO].", color="yellow")
             case "VERMELHO":
                 printwc("Estoque com nível crítico [VERMELHO].", color="red")
-
+    
     def converter_lista(self, lista1):
         
         lista2 = lista1.split(";")
@@ -168,6 +168,7 @@ def on_message(client, userdata, message):
         case "pedido_produto" if((comando[0] == "fabrica") & (comando[1] == linha.id_fabrica) & (comando[3] == linha.id_linha)):
             linha.handler(acao="montar pedido", lista=comando[5])
 
+#argumentos para execução da linha
 parser = argparse.ArgumentParser(description='Argumentos para execução da linha.')
 
 parser.add_argument('-i', '--id_linha', type=str, default="0",

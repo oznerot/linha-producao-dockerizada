@@ -12,7 +12,8 @@ class Fornecedor:
     def __init__(self, id_fornecedor=1):
 
         self.id_fornecedor = id_fornecedor
-
+    #Envia as peças para o almoxarifado caso seja um pedido próprio dele, 
+    # senão, envia informando a fábrica e linha de destino.
     def enviar_pecas(self, lista_pecas, id_almoxarifado, id_fabrica=None, id_linha=None, pedido_proprio=False):
         
         printwc("Enviando peças para o almoxarifado.", color="yellow")
@@ -73,7 +74,8 @@ def on_message(client, userdata, message):
                                     id_fabrica=comando[5], id_linha=comando[7])
         case "almoxarifado" if((comando[3] == fornecedor.id_fornecedor) & (comando[4] == "auto")):
             fornecedor.enviar_pecas(lista_pecas=comando[5], id_almoxarifado=comando[1])
-            
+
+#argumentos para execução do fornecedor         
 parser = argparse.ArgumentParser(description='Argumentos para execução do fornecedor.')
 
 parser.add_argument('-i', '--id_fornecedor', type=str, default="1",
