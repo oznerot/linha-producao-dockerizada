@@ -2,17 +2,22 @@
 Trabalho 2 da matéria de Sistemas Distribuidos da UFSCAR
 
 Grupo A e E:
-Ana Luisa Conrado - 
+
+Ana Luisa Conrado - 801583
+
 Caio Ueda Sampaio - 802215
+
 Igor Kenji Kawai Ueno - 790769
+
 João Paulo Costa - 760646
+
 Marcelo Itonaga Sato - 758580
+
 Rafael de Camillo Masson - 790774
 
 #Objetivo: Garantir que não ocorra ruptura na fabricação por falta de partes.
 
-Cenário: 
-Uma empresa possuí 2 unidades fabris: fábrica 1 com 5 linhas de produção e fábrica 2 com 8 linhas de produção. A empresa fabrica 1 produto em 5 versões diferentes (Pv1, Pv2, Pv3, Pv4, Pv5).
+Cenário: Uma empresa possuí 2 unidades fabris: fábrica 1 com 5 linhas de produção e fábrica 2 com 8 linhas de produção. A empresa fabrica 1 produto em 5 versões diferentes (Pv1, Pv2, Pv3, Pv4, Pv5).
 
 Cada produto possuí uma configuração composta por uma somatória de partes: kit base composto por 43 partes e kit variação composto por uma somatória de partes que variam de 20 a 33 partes dependendo da versão. O total de partes diferentes usadas na fabricação = 100.
 
