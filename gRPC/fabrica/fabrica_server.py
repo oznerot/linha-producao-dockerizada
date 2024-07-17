@@ -16,28 +16,38 @@ class FabricaServicer(fabrica_pb2_grpc.FabricaServiceServicer):
 
     def EnviarPedidoPecas(self, request, context):
         lista_pedido_pecas = request.itens
-        # Implemente a lógica para enviar pedido de peças
-        return google.protobuf.Empty()
+        # Implementação da lógica para enviar pedido de peças
+        print(f"Recebido pedido de peças da almoxarifado: {lista_pedido_pecas}")
+        response = fabrica_pb2.Resposta(status="Pedido de peças recebido pela fábrica")
+        return response
 
     def ReceberPedidoPecas(self, request, context):
         lista_pedido_pecas = request.itens
-        # Implemente a lógica para receber pedido de peças
-        return google.protobuf.Empty()
+        # Implementação da lógica para receber pedido de peças
+        print(f"Enviando pedido de peças para as linhas de produção: {lista_pedido_pecas}")
+        response = fabrica_pb2.Resposta(status="Pedido de peças enviado para produção")
+        return response
 
     def EnviarProdutosEstoque(self, request, context):
         lista_produtos = request.itens
-        # Implemente a lógica para enviar produtos para estoque
-        return google.protobuf.Empty()
+        # Implementação da lógica para enviar produtos para estoque
+        print(f"Enviando produtos para o estoque: {lista_produtos}")
+        response = fabrica_pb2.Resposta(status="Produtos enviados para o estoque")
+        return response
 
     def EnviarPedidoLinha(self, request, context):
         lista_produtos = request.itens
-        # Implemente a lógica para enviar pedido para linha
-        return google.protobuf.Empty()
+        # Implementação da lógica para enviar pedido para linha
+        print(f"Enviando pedido para linha de produção específica: {lista_produtos}")
+        response = fabrica_pb2.Resposta(status="Pedido enviado para linha de produção")
+        return response
 
     def EnviarPedidoLinhaDistribuido(self, request, context):
         lista_produtos = request.itens
-        # Implemente a lógica para enviar pedido para linhas distribuído
-        return google.protobuf.Empty()
+        # Implementação da lógica para enviar pedido para linhas distribuído
+        print(f"Enviando pedido para todas as linhas de produção: {lista_produtos}")
+        response = fabrica_pb2.Resposta(status="Pedido distribuído para todas as linhas")
+        return response
 
 def serve():
     parser = argparse.ArgumentParser(description='Argumentos para execução da fábrica gRPC.')
@@ -57,6 +67,9 @@ def serve():
             time.sleep(86400)
     except KeyboardInterrupt:
         server.stop(0)
+
+if __name__ == '__main__':
+    serve()
 
 if __name__ == '__main__':
     serve()
