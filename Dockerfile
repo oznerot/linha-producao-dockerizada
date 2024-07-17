@@ -1,6 +1,6 @@
 FROM python:3
 
-RUN pip install paho-mqtt
+RUN pip install paho-mqtt==1.5.1
 
 RUN pip install matplotlib
 
