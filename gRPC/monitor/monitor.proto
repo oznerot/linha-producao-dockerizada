@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+service MonitorService {
+    rpc ObterValores(stream ValoresRequest) returns (stream ValoresResponse);
+}
+
+message ValoresRequest {
+    // Se necessário, adicione campos para solicitação
+}
+
+message ValoresResponse {
+    repeated int32 valores = 1;
+}

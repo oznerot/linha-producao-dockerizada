@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+message EstoqueRequest {
+    string id_estoque = 1;
+    string produto = 2;
+    int32 quantidade = 3;
+}
+
+message EstoqueResponse {
+    string mensagem = 1;
+    bool sucesso = 2;
+}
+
+service EstoqueService {
+    rpc ConsultarEstoque(EstoqueRequest) returns (EstoqueResponse);
+    rpc AtualizarEstoque(EstoqueRequest) returns (EstoqueResponse);
+}

@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+service FornecedorService {
+    rpc EnviarPecas(EnviarPecasRequest) returns (EnviarPecasResponse);
+}
+
+message EnviarPecasRequest {
+    string lista_pecas = 1;
+    string id_almoxarifado = 2;
+    string id_fabrica = 3;
+    string id_linha = 4;
+    bool pedido_proprio = 5;
+}
+
+message EnviarPecasResponse {
+    string mensagem = 1;
+}

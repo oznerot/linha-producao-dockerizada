@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+service LinhaService {
+    rpc EnviarPedidoPecas(EnviarPedidoPecasRequest) returns (EnviarPedidoPecasResponse);
+    rpc EnviarPedidoProdutos(EnviarPedidoProdutosRequest) returns (EnviarPedidoProdutosResponse);
+    rpc MontarPedidoProdutos(MontarPedidoProdutosRequest) returns (MontarPedidoProdutosResponse);
+    rpc PedirPecas(PedirPecasRequest) returns (PedirPecasResponse);
+    rpc ReceberPecas(ReceberPecasRequest) returns (ReceberPecasResponse);
+    rpc ChecarEstoquePecas(ChecarEstoquePecasRequest) returns (ChecarEstoquePecasResponse);
+}
+
+message EnviarPedidoPecasRequest {
+    string lista_pedido_pecas = 1;
+    string id_fabrica = 2;
+    string id_linha = 3;
+}
+
+message EnviarPedidoPecasResponse {
+    string mensagem = 1;
+}
+
+message EnviarPedidoProdutosRequest {
+    string lista_pedido_produtos = 1;
+    string id_fabrica = 2;
+    string id_linha = 3;
+}
+
+message EnviarPedidoProdutosResponse {
+    string mensagem = 1;
+}
+
+message MontarPedidoProdutosRequest {
+    string lista_pedido_produtos = 1;
+    string id_fabrica = 2;
+    string id_linha = 3;
+}
+
+message MontarPedidoProdutosResponse {
+    string mensagem = 1;
+}
+
+message PedirPecasRequest {
+    string lista_pedido_pecas = 1;
+    string id_fabrica = 2;
+    string id_linha = 3;
+}
+
+message PedirPecasResponse {
+    string mensagem = 1;
+}
+
+message ReceberPecasRequest {
+    repeated int32 lista_pecas_recebidas = 1;
+    string id_fabrica = 2;
+    string id_linha = 3;
+}
+
+message ReceberPecasResponse {
+    string mensagem = 1;
+}
+
+message ChecarEstoquePecasRequest {
+    string id_fabrica = 1;
+    string id_linha = 2;
+    int32 limiar_pecas = 3;
+}
+
+message ChecarEstoquePecasResponse {
+    string status_buffer = 1;
+    string mensagem = 2;
+}

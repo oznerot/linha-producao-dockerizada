@@ -1,0 +1,60 @@
+# Use a imagem base do Python 3
+FROM python:3
+
+# Atualizar pip e instalar as dependências principais
+RUN pip install --upgrade pip
+RUN pip install grpcio grpcio-tools matplotlib
+
+# Definir o diretório de trabalho no contêiner
+WORKDIR /app
+
+# Copiar os arquivos necessários para o contêiner
+COPY print_with_color.py /app/print_with_color.py
+
+# Copiar os arquivos de cada serviço (estoque, fabrica, linha, almoxarifado, fornecedor, monitor)
+# Certifique-se de ajustar os caminhos conforme a estrutura do seu projeto
+
+## Estoque
+COPY estoque/estoque.proto /app/estoque.proto
+COPY estoque/estoque_server.py /app/estoque_server.py
+COPY estoque/estoque_client.py /app/estoque_client.py
+
+## Fabrica
+COPY fabrica/fabrica.proto /app/fabrica.proto
+COPY fabrica/fabrica_server.py /app/fabrica_server.py
+COPY fabrica/fabrica_client.py /app/fabrica_client.py
+
+## Linha
+COPY linha/linha.proto /app/linha.proto
+COPY linha/linha_server.py /app/linha_server.py
+COPY linha/linha_client.py /app/linha_client.py
+
+## Almoxarifado
+COPY almoxarifado/almoxarifado.proto /app/almoxarifado.proto
+COPY almoxarifado/almoxarifado_server.py /app/almoxarifado_server.py
+COPY almoxarifado/almoxarifado_client.py /app/almoxarifado_client.py
+
+## Fornecedor
+COPY fornecedor/fornecedor.proto /app/fornecedor.proto
+COPY fornecedor/fornecedor_server.py /app/fornecedor_server.py
+COPY fornecedor/fornecedor_client.py /app/fornecedor_client.py
+
+## Monitor
+COPY monitor/monitor.proto /app/monitor.proto
+COPY monitor/monitor_server.py /app/monitor_server.py
+COPY monitor/monitor_client.py /app/monitor_client.py
+
+# Gerar o código Python a partir de cada arquivo .proto
+RUN python -m grpc_tools.protoc -I/app --python_out=/app --grpc_python_out=/app /app/estoque.proto
+RUN python -m grpc_tools.protoc -I/app --python_out=/app --grpc_python_out=/app /app/fabrica.proto
+RUN python -m grpc_tools.protoc -I/app --python_out=/app --grpc_python_out=/app /app/linha.proto
+RUN python -m grpc_tools.protoc -I/app --python_out=/app --grpc_python_out=/app /app/almoxarifado.proto
+RUN python -m grpc_tools.protoc -I/app --python_out=/app --grpc_python_out=/app /app/fornecedor.proto
+RUN python -m grpc_tools.protoc -I/app --python_out=/app --grpc_python_out=/app /app/monitor.proto
+
+# Expor qualquer porta utilizada pelos serviços gRPC
+# Certifique-se de ajustar conforme necessário para cada serviço
+EXPOSE 50051
+
+# Comando de entrada padrão para iniciar o servidor ou qualquer outro script necessário
+#CMD ["python", "/app/linha_server.py"]

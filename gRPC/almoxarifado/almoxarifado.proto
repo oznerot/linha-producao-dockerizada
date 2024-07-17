@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+import "google/protobuf/empty.proto";
+
+message PedidoPecas {
+    repeated int32 pecas = 1;
+}
+
+message RespostaMontarPedido {
+    string mensagem = 1;
+}
+
+message RespostaPedirPecas {
+    string mensagem = 1;
+}
+
+message RespostaReceberPecas {
+    string mensagem = 1;
+}
+
+message EstoquePecas {
+    repeated int32 pecas = 1;
+}
+
+service AlmoxarifadoService {
+    rpc MontarPedidoPecas(PedidoPecas) returns (RespostaMontarPedido);
+    rpc PedirPecas(PedidoPecas) returns (RespostaPedirPecas);
+    rpc ReceberPecas(PedidoPecas) returns (RespostaReceberPecas);
+    rpc ChecarEstoquePecas(google.protobuf.Empty) returns (EstoquePecas);
+}

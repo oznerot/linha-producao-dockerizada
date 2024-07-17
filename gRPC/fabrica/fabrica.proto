@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+message Pedido {
+    repeated int32 itens = 1;
+}
+
+message RespostaEnviarPedido {
+    string mensagem = 1;
+}
+
+message RespostaReceberPedido {
+    string mensagem = 1;
+}
+
+message RespostaEnviarProdutosEstoque {
+    string mensagem = 1;
+}
+
+message RespostaEnviarPedidoLinha {
+    string mensagem = 1;
+}
+
+message RespostaEnviarPedidoLinhaDistribuido {
+    string mensagem = 1;
+}
+
+service FabricaService {
+    rpc EnviarPedidoPecas(Pedido) returns (RespostaEnviarPedido);
+    rpc ReceberPedidoPecas(Pedido) returns (RespostaReceberPedido);
+    rpc EnviarProdutosEstoque(Pedido) returns (RespostaEnviarProdutosEstoque);
+    rpc EnviarPedidoLinha(Pedido) returns (RespostaEnviarPedidoLinha);
+    rpc EnviarPedidoLinhaDistribuido(Pedido) returns (RespostaEnviarPedidoLinhaDistribuido);
+}

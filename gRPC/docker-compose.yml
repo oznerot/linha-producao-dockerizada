@@ -1,0 +1,87 @@
+version: '3'
+
+services:
+  estoque:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: estoque
+    command: python /app/estoque_server.py
+    networks:
+      - grpc_network
+
+  fabrica1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: fabrica
+    command: python /app/fabrica_server.py
+    networks:
+      - grpc_network
+
+  fabrica2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: fabrica
+    command: python /app/fabrica_server.py
+    networks:
+      - grpc_network
+
+  linha1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: linha
+    command: python /app/linha_server.py
+    networks:
+      - grpc_network
+
+  linha2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: linha
+    command: python /app/linha_server.py
+    networks:
+      - grpc_network
+
+  almoxarifado:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: almoxarifado
+    command: python /app/almoxarifado_server.py
+    networks:
+      - grpc_network
+
+  fornecedor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: fornecedor
+    command: python /app/fornecedor_server.py
+    networks:
+      - grpc_network
+
+  monitor:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        SERVICE_NAME: monitor
+    command: python /app/monitor_server.py
+    networks:
+      - grpc_network
+
+networks:
+  grpc_network:
+    name: grpc_network
+    driver: bridge
